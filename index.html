@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>次世代 3D CAD & 流体シミュレータ</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #1a1a1a; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        #canvas-container { width: 100vw; height: 100vh; }
+        
+        /* 操作制御パネル */
+        #control-panel {
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(30, 30, 30, 0.85); color: #fff;
+            padding: 16px; border-radius: 8px; width: 280px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); pointer-events: auto;
+        }
+        h3 { margin: 0 0 10px 0; font-size: 16px; border-bottom: 1px solid #444; padding-bottom: 5px; color: #00ffcc; }
+        .control-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; color: #aaa; margin-bottom: 4px; }
+        select, button { width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; font-size: 14px; margin-bottom: 5px; cursor: pointer; }
+        button:hover { background: #444; }
+        .btn-active { background: #007bff !important; border-color: #0056b3; }
+        
+        /* ステータス・単位表示 */
+        #status-panel {
+            position: absolute; bottom: 12px; left: 12px;
+            background: rgba(0,0,0,0.75); color: #00ffcc;
+            padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace;
+        }
+    </style>
+    <!-- Three.js & カメラを指で動かすためのOrbitControlsライブラリ -->
+    <script src="https://cloudflare.com"></script>
+    <script src="https://jsdelivr.net"></script>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div id="control-panel">
+        <h3>🚀 CAD & 流体制御</h3>
+        
+        <div class="control-group">
+            <label>流体（爆発ガス/液体）表示</label>
+            <button id="fluid-toggle" class="btn-active" onclick="toggleFluid()">流体表示: ON</button>
+        </div>
+
+        <div class="control-group">
+            <label>流体の種類（公開データ想定）</label>
+            <select id="fluid-type" onchange="changeFluidMaterial()">
+                <option value="gas">ガソリン爆発ガス (高圧/圧縮性)</option>
+                <option value="water">冷却水 (低圧縮/粘性)</option>
+                <option value="hydrogen">ロケット液体水素 (超低温/超高圧)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>CADデータ入出力</label>
+            <button onclick="exportCADData()">CADデータ書き出し (JSON/OBJ)</button>
+            <button onclick="importCADData()">他人のデータを読み込む</button>
+        </div>
+
+        <div class="control-group">
+            <label>タッチした部分の情報</label>
+            <div style="background:#222; padding:8px; border-radius:4px; font-size:13px;">
+                部品: <span id="part-name" style="color:#ffcc00">---</span><br>
+                圧力: <span id="part-pressure" style="color:#ff3333">---</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="status-panel">
+        現在の基準単位: <span id="current-unit">ミリメートル (mm)</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
